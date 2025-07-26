@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Key Manager</title>
+</head>
+<body>
+    <h1>Danh sách Key</h1>
+    <table border="1">
+        <tr>
+            <th>Key</th>
+            <th>Hết hạn</th>
+            <th>Thiết bị</th>
+            <th>Hành động</th>
+        </tr>
+        {% for key, data in keys.items() %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ data.expires_at.strftime('%Y-%m-%d') }}</td>
+            <td>{{ data.device_id or "(chưa gán)" }}</td>
+            <td>
+                <form action="/extend/{{ key }}" method="post" style="display:inline">
+                    <input name="days" value="30" size="2"><button>Gia hạn</button>
+                </form>
+                <form action="/unassign/{{ key }}" method="post" style="display:inline">
+                    <button>Gỡ thiết bị</button>
+                </form>
+                <form action="/delete/{{ key }}" method="post" style="display:inline">
+                    <button>Xoá</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Thêm Key mới</h2>
+    <form action="/add" method="post">
+        Key: <input name="key">
+        Số ngày: <input name="days" value="30">
+        <button>Thêm</button>
+    </form>
+</body>
+</html>

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from datetime import datetime, timedelta
+import os
 
 app = Flask(__name__)
 
@@ -39,14 +40,12 @@ def delete_key(key):
         del keys_db[key]
     return redirect(url_for("index"))
 
-# ✅ Gỡ thiết bị khỏi key
 @app.route("/unassign/<key>", methods=["POST"])
 def unassign_key(key):
     if key in keys_db:
         keys_db[key]["device_id"] = None
     return redirect(url_for("index"))
 
-# ✅ Kiểm tra key + device_id
 @app.route("/check/<key>", methods=["GET"])
 def check_key(key):
     device_id = request.args.get("device_id")
@@ -67,5 +66,7 @@ def check_key(key):
 
     return jsonify({"valid": False, "error": "Key đã được sử dụng trên thiết bị khác."})
 
+# ✅ Phần quan trọng để Render hoạt động đúng
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
